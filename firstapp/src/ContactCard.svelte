@@ -6,15 +6,13 @@
   export let image;
 </script>
 
-<style>
-
-</style>
-
-
 
 <div>
   <header>
-  <div>
+  <div class="{image ? "" : "thumbnail-default"}">
+  <!-- Shorcut for conditional class syntax: -->
+  <!-- class:((class name))={contition} -->
+  <!-- <div class:thumbnail-default={!image}> -->
     <img src="{image}" alt="image of user">
   </div>
   <div>
@@ -26,3 +24,12 @@
     <p>{description}</p>
   </div>
 </div>
+
+<style>
+
+.thumbnail-default {
+    background: #ccc;
+}
+
+</style>
+
