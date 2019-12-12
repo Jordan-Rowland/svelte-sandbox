@@ -1,5 +1,6 @@
 <script>
   import ContactCard from "./ContactCard.svelte";
+  import Passwords from "./Passwords.svelte";
 
   let name = "Max";
   let title = "";
@@ -59,7 +60,10 @@
   </div>
 </div>
 
-<button on:click={addContact}>Add Contact Card</button>
+<!-- Modifiers - Add a | after the on:click -->
+<button on:click|once={addContact}>
+  Add Contact Card
+</button>
 <button on:click={deleteFirst}>Delete first</button>
 <button on:click={deleteLast}>Delete last</button>
 
@@ -77,6 +81,9 @@
 {:else}
   <p>Please create some cards!</p>
 {/each}
+
+
+<!-- <Passwords /> -->
 
 <style>
   #form {
