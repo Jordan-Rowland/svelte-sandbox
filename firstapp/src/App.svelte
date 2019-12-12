@@ -1,38 +1,86 @@
 <script>
-/* jshint esversion: 6 */
-  // import { writable } from 'svelte/store';
+  import ContactCard from "./ContactCard.svelte";
 
-    import ContactCard from "./ContactCard.svelte";
-    import Hello from './Hello.svelte';
+  let name = "Max";
+  let title = "";
+  let image = "";
+  let description = "";
+  let done = false;
 
-    let name = 'Judy';
-    let title;
-    let description;
-    let image;
+  let createdContacts = [];
+
+  function addContact() {
+    if (name
+    && title
+    && image
+    && description) {
+      // Use spread operator to re-assign and create
+    // 'reactive' array.
+      createdContacts = [
+        ...createdContacts, {
+          id: Math.random(),
+          name,
+          title,
+          image,
+          description
+        }
+      ];
+      done = true;
+      return;
+    };
+  };
+
+  function deleteFirst() {
+    createdContacts = createdContacts.slice(1);
+  }
+
+  function deleteLast() {
+    createdContacts = createdContacts.slice(0, -1);
+  }
 </script>
 
-<input type="" name="name" bind:value={name}>
-<input type="" name="title" bind:value={title}>
-<input type="" bind:value={description}>
-<input type="" bind:value={image}>
 
+<div id="form">
+  <div class="form-control">
+    <label for="userName">User Name</label>
+    <input type="text" bind:value={name} id="userName" />
+  </div>
+  <div class="form-control">
+    <label for="jobTitle">Job Title</label>
+    <input type="text" bind:value={title} id="jobTitle" />
+  </div>
+  <div class="form-control">
+    <label for="image">Image URL</label>
+    <input type="text" bind:value={image} id="image" />
+  </div>
+  <div class="form-control">
+    <label for="desc">Description</label>
+    <textarea rows="3" bind:value={description} id="desc" />
+  </div>
+</div>
 
-<Hello name={name}/>
+<button on:click={addContact}>Add Contact Card</button>
+<button on:click={deleteFirst}>Delete first</button>
+<button on:click={deleteLast}>Delete last</button>
 
+{#if !done}
+  <h3>Please fill out the forms and click the button to generate</h3>
+{/if}
 
-<!-- Name of valiable in component is name of attribute -->
-<!-- Can also use 'object destructuring syntax to
-    make the attribute definition more concise, as
-    shown in 'description' and 'image' below -->
-<ContactCard
-    userName={name}
-    jobTitle={title}
-    {description}
-    {image}/>
+{#each createdContacts as contact, index (contact.id)}
+  <h2># {index + 1}</h2>
+  <ContactCard
+    userName={contact.name}
+    jobTitle={contact.title}
+    description={contact.description}
+    userImage={contact.image} />
+{:else}
+  <p>Please create some cards!</p>
+{/each}
 
 <style>
-
-
+  #form {
+    width: 30rem;
+    max-width: 100%;
+  }
 </style>
-
-
