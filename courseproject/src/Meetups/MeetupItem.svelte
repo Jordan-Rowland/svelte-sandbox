@@ -1,5 +1,9 @@
 <script>
+  import { createEventDispatcher } from "svelte";
   import Button from "../UI/Button.svelte";
+  import Badge from "../UI/Badge.svelte";
+
+  const dispatch = createEventDispatcher();
 
   export let id;
   export let title;
@@ -8,11 +12,20 @@
   export let description;
   export let address;
   export let contact;
+  export let isFave;
+
+  // function () {}
 </script>
 
 <article>
   <header>
-    <h1>{title}</h1>
+    <h1>
+      {title}
+
+      {#if isFave}
+        <Badge>FAVOURITE</Badge>
+      {/if}
+    </h1>
     <h2>{subtitle}</h2>
     <p>{address}</p>
   </header>
@@ -23,16 +36,15 @@
     <p>{description}</p>
   </div>
   <footer>
-    <Button href="mailto:{contact}"
-      caption="Contact"
-      />
-    <Button mode="outline"
+    <Button href="mailto:{contact}">Contact</Button>
+    <Button
+      mode="outline"
+      color="{isFave ? null : 'success'}"
       type="button"
-      caption="Favourite"
-      />
-    <Button type="button"
-      caption="Show Details"
-      />
+      on:click={() => dispatch("togglefavourite", id)}>
+      {isFave ? 'Unfavourite' : 'Favourite'}
+    </Button>
+    <Button type="button">Show Details</Button>
   </footer>
 </article>
 
@@ -49,7 +61,7 @@
   .content,
   footer {
     padding: 1rem;
-    height: 7rem;
+    height: 9rem;
   }
 
   .image {
@@ -89,5 +101,9 @@
 
   div {
     text-align: right;
+  }
+
+  .content{
+    height: 7rem;
   }
 </style>
