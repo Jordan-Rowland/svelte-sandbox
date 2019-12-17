@@ -6,6 +6,8 @@
 
   let editMode;
 
+  // $: console.table(meetups)
+
   let meetups = [
     {
       id: "m1",

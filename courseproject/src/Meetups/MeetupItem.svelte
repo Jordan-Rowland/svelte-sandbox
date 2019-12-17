@@ -14,14 +14,13 @@
   export let contact;
   export let isFave;
 
-  // function () {}
+
 </script>
 
 <article>
   <header>
     <h1>
       {title}
-
       {#if isFave}
         <Badge>FAVOURITE</Badge>
       {/if}

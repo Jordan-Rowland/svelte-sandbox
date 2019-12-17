@@ -8,7 +8,7 @@
 <section id="meetups">
   {#each meetups as meetup, index (meetup.id)}
     <MeetupItem
-      id={meetup.id},
+      id={meetup.id}
       title={meetup.title}
       subtitle={meetup.subtitle}
       address={meetup.address}
