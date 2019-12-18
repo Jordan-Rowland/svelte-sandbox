@@ -4,9 +4,8 @@
   import Header from "./UI/Header.svelte";
   import Button from "./UI/Button.svelte";
 
-  let editMode;
 
-  // $: console.table(meetups)
+  let editMode;
 
   let meetups = [
     {
@@ -29,7 +28,8 @@
       contact: "code@douletran.com",
       favourite: false,
     }
-  ]
+  ];
+
 
   function addMeetup(event) {
     const newMeetup = {
@@ -42,10 +42,10 @@
       contact: event.detail.contact,
     };
 
-    meetups = [newMeetup,...meetups]
-
+    meetups = [newMeetup,...meetups];
     editMode = false;
   }
+
 
   function toggleFavourite(event) {
     const id = event.detail;
@@ -56,7 +56,7 @@
     const updatedMeetupArray = [...meetups];
     updatedMeetupArray[meetupIndex] = updatedMeetup;
     meetups = updatedMeetupArray;
-  };
+  }
 
 </script>
 
@@ -89,11 +89,11 @@
 
 
 <style>
-  main {
-    margin-top: 5rem;
-  }
+main {
+  margin-top: 5rem;
+}
 
 .meetup-controls {
-margin: 1rem;
+  margin: 1rem;
 }
 </style>
