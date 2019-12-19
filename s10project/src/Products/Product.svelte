@@ -2,6 +2,7 @@
   import cartItems from "../Cart/cart-store.js";
   import Button from "../UI/Button.svelte";
 
+
   export let id;
   export let title;
   export let price;
@@ -20,6 +21,19 @@
     });
   }
 </script>
+
+
+<div class="product">
+  <div>
+    <h1>{title}</h1>
+    <h2>{price}</h2>
+    <p>{description}</p>
+  </div>
+  <div>
+    <Button on:click={addToCart}>Add to Cart</Button>
+  </div>
+</div>
+
 
 <style>
   .product {
@@ -48,14 +62,3 @@
     margin: 0;
   }
 </style>
-
-<div class="product">
-  <div>
-    <h1>{title}</h1>
-    <h2>{price}</h2>
-    <p>{description}</p>
-  </div>
-  <div>
-    <Button on:click={addToCart}>Add to Cart</Button>
-  </div>
-</div>
