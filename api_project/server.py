@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -26,7 +26,7 @@ def home(path):
 @app.route("/notes", methods=["POST"])
 def add_note():
     note = Note.from_json(request.get_json())
-    db.session.add(post)
+    db.session.add(note)
     db.session.commit()
     return jsonify(note.to_json()), 201
 
@@ -39,5 +39,14 @@ def posts():
     })
 
 
+@app.route("/note/<int:note_id>", methods=["DELETE"])
+def delete_post(note_id):
+    Note.query.filter(id=note_id).delete()
+    db.session.commit()
+    return jsonify({
+        "success": True
+    })
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=3000)

@@ -46,4 +46,4 @@ class Note(db.Model):
         body = json_post.get('body')
         if body is None or body == '':
             raise ValidationError('post does not have any body')
-        return Post(body=body)
+        return Note(body=body)
