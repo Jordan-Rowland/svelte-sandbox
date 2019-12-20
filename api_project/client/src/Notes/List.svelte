@@ -1,27 +1,28 @@
 <script>
   import { onMount } from "svelte";
+  import { createEventDispatcher } from "svelte";
+  let dispatch = createEventDispatcher();
+
   import Note from "./Note.svelte";
 
   export let id;
   export let name;
 
   let notes;
-  $: notes;
-
-  async function getNotes() {
-    const res = await fetch(
-      `http://localhost:3000/list/${id}/notes`);
-      // "http://localhost:3000/notes");
-    const resJson = await res.json();
-    notes = resJson.notes;
-  }
+  let newNote;
 
   onMount(() => {
     getNotes();
   });
 
-  let newNote = "Test note";
-  $: console.log(newNote);
+
+  async function getNotes() {
+    const res = await fetch(
+      `http://localhost:3000/list/${id}/notes`);
+    const resJson = await res.json();
+    notes = resJson.notes;
+  }
+
 
   async function addNote() {
     const res = await fetch(
@@ -44,11 +45,15 @@
     const res = await fetch(
       `http://localhost:3000/deleteNote/${selectedId}`, {method: "DELETE"}
     );
-    console.log(await res);
     let updatedNotes = notes.filter(
       note => note.id !== selectedId
     );
     notes = updatedNotes;
+  }
+
+
+  function deleteList() {
+    dispatch("delete-list", id);
   }
 
 </script>
@@ -56,7 +61,11 @@
 <section>
 <div class="list">
 <div>
-{name}
+  <div class="name">
+    {name}
+    <span class="delete-list"
+      on:click={deleteList}>X</span>
+  </div>
 </div>
 <div class="new-list">
   <input type="text" name="new-note" bind:value={newNote}>
@@ -74,21 +83,39 @@
 
 <style>
 
+.name {
+  background-color: hsla(258, 100%, 51%, 1);
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+  margin: 5px;
+  color: hsla(258, 100%, 99%, 1);
+  font-weight: 800;
+}
+
+.delete-list {
+  background-color: hsla(258, 100%, 61%, 1);
+  padding: 0 0.25rem;
+}
+
+.delete-list:hover {
+  cursor: pointer;
+}
+
 .list {
   background-color: hsla(258, 100%, 61%, 1);
   margin: 20px;
   display: flex;
   flex-direction: column;
-  min-width: 20vw;
+  min-width: 30vw;
   max-width: 30vw;
 }
 
 .new-list {
   margin: 10px auto;
-}
-
-section {
-  display: inline;
+  max-width: 75%;
+  min-width: 15%;
 }
 
 </style>

@@ -53,6 +53,16 @@ def get_notes(list_id):
     })
 
 
+@app.route("/deleteList/<int:list_id>", methods=["DELETE"])
+def delete_list(list_id):
+    List.query.filter_by(id=list_id).delete()
+    Note.query.filter_by(list_id=list_id).delete()
+    db.session.commit()
+    return jsonify({
+        "success": True
+    })
+
+
 @app.route("/addNote", methods=["POST"])
 def add_note():
     note = Note.from_json(request.get_json())

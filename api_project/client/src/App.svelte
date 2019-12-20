@@ -28,11 +28,24 @@
         body: JSON.stringify({name: listName}),
       }
     );
-    lists = [await res.json(), ...lists];
+    lists = [...lists, await res.json()];
+  }
+
+
+  async function deleteList(event) {
+    const selectedId = event.detail;
+    const res = await fetch(
+      `http://localhost:3000/deleteList/${selectedId}`, {method: "DELETE"}
+    );
+    let updatedLists = lists.filter(
+      list => list.id !== selectedId
+    );
+    lists = updatedLists;
   }
 
 </script>
 
+<div id="app">
 
 <input type="text" name="newList" bind:value={listName}>
 <button
@@ -41,16 +54,22 @@
 <div class="column">
 {#if lists}
   {#each lists as list, index (list.id)}
-    <List name={list.name} id={list.id} class="notes"/>
+    <List name={list.name} id={list.id} class="notes"
+      on:delete-list={deleteList} />
   {/each}
 {/if}
 </div>
 
+</div>
+
+
 <style>
 
-/*.notes {
-  display: inline-flex;
-}*/
+:global(body) {
+  margin: 0;
+  background-color: hsla(258, 100%, 91%, 1);
+}
+
 
 .column {
   display: flex;
