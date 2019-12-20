@@ -28,16 +28,16 @@ def home(path):
 def get_lists():
     lists = List.query.all()
     return jsonify({
-        "lists": [list.to_json() for list in lists]
+        "lists": [_list.to_json() for _list in lists]
     })
 
 
 @app.route("/addList", methods=["POST"])
 def add_list():
-    list = List.from_json(request.get_json())
-    db.session.add(list)
+    new_list = List.from_json(request.get_json())
+    db.session.add(new_list)
     db.session.commit()
-    return jsonify(list.to_json()), 201
+    return jsonify(new_list.to_json()), 201
 
 
 @app.route("/list/<int:list_id>/notes")
