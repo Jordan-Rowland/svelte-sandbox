@@ -24,13 +24,22 @@
 <style>
 
 #note {
+  background-color: hsla(258, 100%, 99%, 1);
+  position: relative;
+  display: flex;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   transition: 0.3s;
   padding: 12px;
-  max-width: 25%;
-  min-height: 10%;
+  min-width: 25%;
+  min-height: 6rem;
   margin: 0.75rem;
 }
+
+button {
+  position: absolute;
+  bottom: 0;
+  right: 6px;
+  }
 
 #note:hover {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);

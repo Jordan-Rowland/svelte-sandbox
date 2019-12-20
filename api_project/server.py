@@ -10,7 +10,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = \
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
-from models import Note
+from models import List, Note
 
 ####################################
 @app.route("/")
@@ -23,7 +23,37 @@ def home(path):
     return send_from_directory('client/public', path)
 ####################################
 
-@app.route("/notes", methods=["POST"])
+
+@app.route("/lists")
+def get_lists():
+    lists = List.query.all()
+    return jsonify({
+        "lists": [list.to_json() for list in lists]
+    })
+
+
+@app.route("/addList", methods=["POST"])
+def add_list():
+    list = List.from_json(request.get_json())
+    db.session.add(list)
+    db.session.commit()
+    return jsonify(list.to_json()), 201
+
+
+@app.route("/list/<int:list_id>/notes")
+def get_notes(list_id):
+    notes = Note.query.filter_by(
+        list_id=list_id
+    )
+    # .order_by(
+    #     Note.timestamp.desc()
+    # ).all()
+    return jsonify({
+        "notes": [note.to_json() for note in notes]
+    })
+
+
+@app.route("/addNote", methods=["POST"])
 def add_note():
     note = Note.from_json(request.get_json())
     db.session.add(note)
@@ -31,17 +61,9 @@ def add_note():
     return jsonify(note.to_json()), 201
 
 
-@app.route("/notes")
-def posts():
-    notes = Note.query.all()
-    return jsonify({
-        "notes": [note.to_json() for note in notes]
-    })
-
-
-@app.route("/note/<int:note_id>", methods=["DELETE"])
-def delete_post(note_id):
-    Note.query.filter(id=note_id).delete()
+@app.route("/deleteNote/<int:note_id>", methods=["DELETE"])
+def delete_note(note_id):
+    Note.query.filter_by(id=note_id).delete()
     db.session.commit()
     return jsonify({
         "success": True
