@@ -3,6 +3,7 @@
   import Note from "./Note.svelte";
 
   export let id;
+  export let name;
 
   let notes;
   $: notes;
@@ -52,12 +53,16 @@
 
 </script>
 
+<section>
+<div class="list">
 <div>
+{name}
+</div>
+<div class="new-list">
   <input type="text" name="new-note" bind:value={newNote}>
   <button on:click={addNote}>Add New Note</button>
 </div>
 
-<div class="list">
 {#if notes}
   {#each notes as note (note.id)}
     <Note noteBody={note.body} id={note.id}
@@ -65,6 +70,7 @@
   {/each}
 {/if}
 </div>
+</section>
 
 <style>
 
@@ -75,6 +81,14 @@
   flex-direction: column;
   min-width: 20vw;
   max-width: 30vw;
+}
+
+.new-list {
+  margin: 10px auto;
+}
+
+section {
+  display: inline;
 }
 
 </style>

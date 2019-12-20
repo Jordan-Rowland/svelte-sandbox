@@ -33,20 +33,28 @@
 
 </script>
 
+
 <input type="text" name="newList" bind:value={listName}>
 <button
   on:click={addList}>Add List</button>
 
+<div class="column">
 {#if lists}
   {#each lists as list, index (list.id)}
-    <List id={list.id} class="notes"/>
+    <List name={list.name} id={list.id} class="notes"/>
   {/each}
 {/if}
+</div>
 
 <style>
 
-.notes {
+/*.notes {
   display: inline-flex;
+}*/
+
+.column {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 </style>
