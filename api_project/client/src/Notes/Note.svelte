@@ -31,18 +31,23 @@
   transition: 0.3s;
   padding: 12px;
   min-width: 25%;
-  min-height: 6rem;
+  min-height: 4rem;
   margin: 0.75rem;
+  border-radius: 3px;
 }
 
 button {
   position: absolute;
-  bottom: 0;
+  bottom: -2px;
   right: 6px;
+  border: none;
+  background-color: hsla(258, 100%, 89%, 1);
+  border-radius: 3px;
+  padding: 0.25rem;
   }
 
-#note:hover {
-  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+button:hover {
+  cursor: pointer;
 }
 
 </style>

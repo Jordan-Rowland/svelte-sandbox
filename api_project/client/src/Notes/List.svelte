@@ -1,6 +1,8 @@
 <script>
   import { onMount } from "svelte";
   import { createEventDispatcher } from "svelte";
+  import { slide } from 'svelte/transition';
+  import { quintOut } from 'svelte/easing';
   let dispatch = createEventDispatcher();
 
   import Note from "./Note.svelte";
@@ -58,7 +60,8 @@
 
 </script>
 
-<section>
+<section
+  transition:slide="{{delay: 50, duration: 185, easing: quintOut }}">
 <div class="list">
 <div>
   <div class="name">
@@ -67,11 +70,10 @@
       on:click={deleteList}>X</span>
   </div>
 </div>
-<div class="new-list">
+<div class="new-note">
   <input type="text" name="new-note" bind:value={newNote}>
-  <button on:click={addNote}>Add New Note</button>
+  <button on:click={addNote}>Add Note</button>
 </div>
-
 {#if notes}
   {#each notes as note (note.id)}
     <Note noteBody={note.body} id={note.id}
@@ -84,7 +86,7 @@
 <style>
 
 .name {
-  background-color: hsla(258, 100%, 51%, 1);
+  background-color: hsla(230, 80%, 30%, 1);
   border-radius: 5px;
   display: flex;
   justify-content: space-between;
@@ -108,14 +110,27 @@
   margin: 20px;
   display: flex;
   flex-direction: column;
-  min-width: 30vw;
-  max-width: 30vw;
+  min-width: 21vw;
 }
 
-.new-list {
+.new-note {
   margin: 10px auto;
-  max-width: 75%;
-  min-width: 15%;
+  display: flex;
+  justify-content: space-around;
+}
+
+button {
+  border-radius: 3px;
+  margin-left: 0.35rem;
+  }
+
+button:hover {
+  cursor: pointer;
+}
+
+input {
+  border-radius: 3px;
+  max-width: 65%;
 }
 
 </style>

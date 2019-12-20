@@ -29,6 +29,7 @@
       }
     );
     lists = [...lists, await res.json()];
+    listName = "";
   }
 
 
@@ -45,21 +46,19 @@
 
 </script>
 
-<div id="app">
-
-<input type="text" name="newList" bind:value={listName}>
-<button
-  on:click={addList}>Add List</button>
+<div class="new-list">
+  <input type="text" name="newList" bind:value={listName} placeholder="New List Name">
+  <button
+    on:click={addList}>Add List</button>
+</div>
 
 <div class="column">
 {#if lists}
   {#each lists as list, index (list.id)}
-    <List name={list.name} id={list.id} class="notes"
+    <List name={list.name} id={list.id}
       on:delete-list={deleteList} />
   {/each}
 {/if}
-</div>
-
 </div>
 
 
@@ -67,13 +66,33 @@
 
 :global(body) {
   margin: 0;
-  background-color: hsla(258, 100%, 91%, 1);
+  background-color: hsla(258, 100%, 96%, 1);
 }
-
 
 .column {
   display: flex;
-  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-top: 50px;
+}
+
+.new-list {
+  position: fixed;
+  width: 99%;
+  display: flex;
+  background-color: hsla(258, 100%, 61%, 1);
+  border-radius: 3px;
+  justify-content: center;
+  align-content: center;
+}
+
+.new-list > input, button {
+  margin: 9px;
+  border-radius: 3px;
+  margin-left: 0.35rem;
+}
+
+button:hover {
+  cursor: pointer;
 }
 
 </style>
