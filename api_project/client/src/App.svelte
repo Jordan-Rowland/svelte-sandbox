@@ -11,7 +11,8 @@
 
   async function getLists() {
     const res = await fetch(
-      "http://localhost:3000/lists");
+      // "http://localhost:3000/lists");
+      "/lists");
     const resJson = await res.json();
     lists = resJson.lists;
     console.log(lists);
@@ -19,7 +20,8 @@
 
   async function addList() {
     const res = await fetch(
-      "http://localhost:3000/addList", {
+      // "http://localhost:3000/addList", {
+      "/addList", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
@@ -36,7 +38,8 @@
   async function deleteList(event) {
     const selectedId = event.detail;
     const res = await fetch(
-      `http://localhost:3000/deleteList/${selectedId}`, {method: "DELETE"}
+      // `http://localhost:3000/deleteList/${selectedId}`, {method: "DELETE"}
+      `/deleteList/${selectedId}`, {method: "DELETE"}
     );
     let updatedLists = lists.filter(
       list => list.id !== selectedId
@@ -66,7 +69,7 @@
 
 :global(body) {
   margin: 0;
-  background-color: hsla(258, 100%, 96%, 1);
+  background-color: hsl(170, 45%, 95%);
 }
 
 .column {
@@ -79,7 +82,7 @@
   position: fixed;
   width: 99%;
   display: flex;
-  background-color: hsla(258, 100%, 61%, 1);
+  background-color: hsla(228, 100%, 61%, 1);
   border-radius: 3px;
   justify-content: center;
   align-content: center;
