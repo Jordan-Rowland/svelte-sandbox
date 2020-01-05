@@ -1,6 +1,10 @@
 
-rm -rf ./static/*
+cd client/
+npm run build
+cd ..
 
-cp client/public/global.css ./static/
+rm -rvf ./static/*
+
 # cp client/public/index.html ./templates/
-cp -r client/public/build/ ./static/
+cp -v client/public/global.css ./static/
+cp -rv client/public/build/ ./static/

@@ -30,23 +30,19 @@
     // description = selectedProduct.description;
 
     // Short-term subscriptions, invoked only when
-    // needed in this function, the immediately
+    // needed in this function, then immediately
     // unsubscribe.
-    const prodSubscription = products.subscribe(
+    const unsubscribe = products.subscribe(
       products => {
-        descriptions = products.find(
-          p => p.id === id
-        );
+        descriptions = products.find(p => p.id === id);
       }
     );
-    prodSubscription()
+    unsubscribe();
   }
 
 
   function removeFromCart() {
-    cartItems.update(items => {
-      return items.filter(item => item.id !== id);
-    });
+    cartItems.removeItem(id);
   }
 </script>
 

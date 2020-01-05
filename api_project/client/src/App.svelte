@@ -1,69 +1,54 @@
 <script>
   import { onMount } from "svelte";
-  import List from "./Notes/List.svelte";
+  import Login from "./Users/Login.svelte";
+  import Board from "./Board/Board.svelte";
+  import Error from "./UI/Error.svelte";
 
-  onMount(() => {
-    getLists();
+  let errorMessage;
+  let errorShow;
+
+
+  let loggedIn;
+
+
+  onMount(async () => {
+    const res = await fetch(
+      "/checkLogin");
+    const response = await res.json();
+    if (response.logged_in) {
+      loggedIn = true;
+    } else {
+      loggedIn = false;
+    }
   });
 
-  let lists = [];
-  let listName;
 
-  async function getLists() {
-    const res = await fetch(
-      // "http://localhost:3000/lists");
-      "/lists");
-    const resJson = await res.json();
-    lists = resJson.lists;
-    console.log(lists);
+  async function logoutUser() {
+    loggedIn = false;
+    const res = await fetch(`/logout`);
+    const response = await res.json();
   }
 
-  async function addList() {
-    const res = await fetch(
-      // "http://localhost:3000/addList", {
-      "/addList", {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({name: listName}),
-      }
-    );
-    lists = [...lists, await res.json()];
-    listName = "";
-  }
-
-
-  async function deleteList(event) {
-    const selectedId = event.detail;
-    const res = await fetch(
-      // `http://localhost:3000/deleteList/${selectedId}`, {method: "DELETE"}
-      `/deleteList/${selectedId}`, {method: "DELETE"}
-    );
-    let updatedLists = lists.filter(
-      list => list.id !== selectedId
-    );
-    lists = updatedLists;
+  function displayError(event) {
+    errorMessage = event.detail;
+    errorShow = true;
   }
 
 </script>
 
-<div class="new-list">
-  <input type="text" name="newList" bind:value={listName} placeholder="New List Name">
-  <button
-    on:click={addList}>Add List</button>
-</div>
-
-<div class="column">
-{#if lists}
-  {#each lists as list, index (list.id)}
-    <List name={list.name} id={list.id}
-      on:delete-list={deleteList} />
-  {/each}
+{#if loggedIn == false}
+  <Login
+    on:login-user={(event) => loggedIn = event.detail.success}
+    on:display-error={displayError} />
+{:else if loggedIn}
+  <Board on:logout-user={logoutUser}
+    on:display-error={displayError} />
+{:else}
+ <div></div>
 {/if}
-</div>
 
+<Error show={errorShow} message={errorMessage}
+  on:close-error={() => errorShow = false} />
 
 <style>
 
@@ -72,26 +57,13 @@
   background-color: hsl(170, 45%, 95%);
 }
 
-.column {
-  display: flex;
-  justify-content: flex-start;
-  margin-top: 50px;
+:global(:root) {
+  --theme-color: hsl(228, 100%, 61%);
 }
 
-.new-list {
-  position: fixed;
-  width: 99%;
-  display: flex;
-  background-color: hsla(228, 100%, 61%, 1);
-  border-radius: 3px;
-  justify-content: center;
-  align-content: center;
-}
-
-.new-list > input, button {
-  margin: 9px;
-  border-radius: 3px;
-  margin-left: 0.35rem;
+:global(*) {
+  /*font-family: 'Lato', sans-serif;*/
+  /*font-family: 'Mansalva', cursive;*/
 }
 
 button:hover {

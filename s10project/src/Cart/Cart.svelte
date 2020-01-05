@@ -14,7 +14,7 @@
 //// are stores.                              ////
 /////////////////////////////////////////////////
 
-  $: console.log($cartItems);
+  // $: console.log($cartItems);
 
 
   // If you need to do something with the store data, you

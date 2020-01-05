@@ -6,9 +6,9 @@
 
   let showCart = true;
 
-  timer.subscribe(count => {
-    // console.log(count);
-  });
+  // timer.subscribe(count => {
+  //   console.log(count);
+  // });
 
 </script>
 
