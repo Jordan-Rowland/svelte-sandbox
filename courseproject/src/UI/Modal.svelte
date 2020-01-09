@@ -1,5 +1,6 @@
 <script>
   import { createEventDispatcher } from "svelte";
+  import { fade, scale } from "svelte/transition";
   import Button from "./Button.svelte";
 
   const dispatch = createEventDispatcher();
@@ -12,17 +13,19 @@
 </script>
 
 
-<div class="modal-backdrop" on:click={closeModal} />
-<div class="modal">
-  <h1>{title}</h1>
-  <div class="content">
-    <slot />
-  </div>
-  <footer>
-    <slot name="footer">
-      <Button on:click={closeModal}>Close</Button>
-    </slot>
-  </footer>
+<div class="modal-backdrop" on:click={closeModal}
+  transition:fade/>
+<div class="modal"
+  transition:scale>
+    <h1>{title}</h1>
+    <div class="content">
+      <slot />
+    </div>
+    <footer>
+      <slot name="footer">
+        <Button on:click={closeModal}>Close</Button>
+      </slot>
+    </footer>
 </div>
 
 

@@ -48,7 +48,7 @@
     <MeetupGrid meetups={$meetups}
       on:showdetails={showDetails}
       on:editmeetup={startEdit}
-      on:add={() => edit = 'edit'}
+      on:add={() => editMode = 'edit'}
     />
 {:else}
   <MeetupDetail id={pageData.id}

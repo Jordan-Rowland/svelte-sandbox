@@ -4,6 +4,7 @@
 
   import meetups from "./meetups-store.js";
 
+
   import { createEventDispatcher } from "svelte";
   const dispatch = createEventDispatcher();
 
@@ -14,7 +15,6 @@
   export let imageUrl;
   export let description;
   export let address;
-  export let contact;
   export let isFave;
 
 

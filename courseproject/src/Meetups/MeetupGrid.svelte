@@ -5,6 +5,10 @@
   import { createEventDispatcher } from "svelte";
   const dispatch = createEventDispatcher();
 
+  import { scale } from "svelte/transition";
+  import { flip } from "svelte/animate";
+
+
   export let meetups;
 
   let faveOnly;
@@ -30,7 +34,8 @@
   </Button>
 </section>
 <section id="meetups">
-  {#each filteredMeetups as meetup}
+  {#each filteredMeetups as meetup (meetup.id)}
+  <div transition:scale animate:flip={{duration: 300}}>
     <MeetupItem
       id={meetup.id}
       title={meetup.title}
@@ -38,11 +43,11 @@
       address={meetup.address}
       imageUrl={meetup.imageUrl}
       description={meetup.description}
-      contact={meetup.contact}
       isFave={meetup.favourite}
       on:showdetails
       on:editmeetup
     />
+  </div>
   {/each}
 </section>
 

@@ -1,8 +1,8 @@
 <script>
-
+import { fly } from "svelte/transition";
 </script>
 
-<span><slot /></span>
+<span transition:fly={{x: 30}}><slot /></span>
 
 <style>
   span {
