@@ -63,9 +63,28 @@
     };
 
     if (id) {
-      meetups.updateMeetup(id, meetupData)
+      fetch(`https://svelte-meetus-ec364.firebaseio.com/meetups/${id}/.json`, {
+        // PUT is used to override all existing data with
+        // the new data. PATCH will overwrite what is included
+        // in the request, and leave the rest.
+        method: "PATCH",
+        body: JSON.stringify(meetupData),
+        headers: {
+          'Content-Type': "application/json"
+        }
+      })
+      .then(res => meetups.updateMeetup(id, meetupData))
+      .catch(err => console.log(err));
     } else {
-      meetups.addMeetup(meetupData);
+      fetch("https://svelte-meetus-ec364.firebaseio.com/meetups.json", {
+        method: "POST",
+        body: JSON.stringify({ ...meetupData, favourite: false }),
+        headers: { 'Content-Type': "application/json" }
+      })
+      .then(res => res.json())
+      .then(data => meetups.addMeetup({ ...meetupData, favourite: false, id: data.name }))
+      .catch(err => console.log(err));
+
     }
     dispatch("save");
   }

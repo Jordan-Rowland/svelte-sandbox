@@ -294,6 +294,9 @@ var app = (function () {
             throw new Error(`Function called outside component initialization`);
         return current_component;
     }
+    function onMount(fn) {
+        get_current_component().$$.on_mount.push(fn);
+    }
     function onDestroy(fn) {
         get_current_component().$$.on_destroy.push(fn);
     }
@@ -535,6 +538,8 @@ var app = (function () {
             }
         };
     }
+
+    const globals = (typeof window !== 'undefined' ? window : global);
     function outro_and_destroy_block(block, lookup) {
         transition_out(block, 1, 1, () => {
             lookup.delete(block.key);
@@ -1319,26 +1324,26 @@ var app = (function () {
     }
 
     const meetups = writable([
-        {
-          id: "m1",
-          title: "Python Bootcamp",
-          subtitle: "Learn to code in 276 years",
-          description: "In this meetup, we will have some total beginners to teach you how to code! Badly!",
-          imageUrl: "https://3t7bol18ef963l8x6yzv7ja1-wpengine.netdna-ssl.com/wp-content/uploads/2017/07/on-ground_coding_bootcamps_2.jpg",
-          address: "421 Evergreen Terrace, Springfield 52413",
-          contact: "code@douletran.com",
-          favourite: false,
-        },
-        {
-          id: "m2",
-          title: "JS Bootcamp",
-          subtitle: "Learn to code in 6 minues",
-          description: "In this meetup, we don't even know what to do! JS is so weird lol",
-          imageUrl: "https://brokeassstuart-9uzlt3u.netdna-ssl.com/wp-content/pictsnShit/2016/06/coding-bootcamp.jpg",
-          address: "123 Fake Street, Springfield 51423",
-          contact: "code@douletran.com",
-          favourite: false,
-        }
+        // {
+        //   id: "m1",
+        //   title: "Python Bootcamp",
+        //   subtitle: "Learn to code in 276 years",
+        //   description: "In this meetup, we will have some total beginners to teach you how to code! Badly!",
+        //   imageUrl: "https://3t7bol18ef963l8x6yzv7ja1-wpengine.netdna-ssl.com/wp-content/uploads/2017/07/on-ground_coding_bootcamps_2.jpg",
+        //   address: "421 Evergreen Terrace, Springfield 52413",
+        //   contact: "code@douletran.com",
+        //   favourite: false,
+        // },
+        // {
+        //   id: "m2",
+        //   title: "JS Bootcamp",
+        //   subtitle: "Learn to code in 6 minues",
+        //   description: "In this meetup, we don't even know what to do! JS is so weird lol",
+        //   imageUrl: "https://brokeassstuart-9uzlt3u.netdna-ssl.com/wp-content/pictsnShit/2016/06/coding-bootcamp.jpg",
+        //   address: "123 Fake Street, Springfield 51423",
+        //   contact: "code@douletran.com",
+        //   favourite: false,
+        // }
     ]);
 
     const customMeetupsStore = {
@@ -1347,12 +1352,11 @@ var app = (function () {
       // above store and proxying the subscribe method
       // to make our custom store.
       subscribe: meetups.subscribe,
+      setMeetups: meetupArray => {
+        meetups.set(meetupArray);
+      },
       addMeetup: meetupData => {
-        const newMeetup = {
-          ...meetupData,
-          id: Math.random().toString(),
-          favourite: false,
-        };
+        const newMeetup = { ...meetupData };
         meetups.update(items => {
           return [newMeetup, ...items];
         });
@@ -2129,7 +2133,38 @@ var app = (function () {
     	return block;
     }
 
-    // (37:2) {#each filteredMeetups as meetup (meetup.id)}
+    // (36:0) {#if !filteredMeetups.length}
+    function create_if_block$2(ctx) {
+    	let p;
+
+    	const block = {
+    		c: function create() {
+    			p = element("p");
+    			p.textContent = "No meetups found.";
+    			attr_dev(p, "id", "no-meetups");
+    			attr_dev(p, "class", "svelte-l72df8");
+    			add_location(p, file$4, 36, 2, 760);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, p, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(p);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$2.name,
+    		type: "if",
+    		source: "(36:0) {#if !filteredMeetups.length}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (40:2) {#each filteredMeetups as meetup (meetup.id)}
     function create_each_block(key_1, ctx) {
     	let div;
     	let t;
@@ -2161,7 +2196,7 @@ var app = (function () {
     			div = element("div");
     			create_component(meetupitem.$$.fragment);
     			t = space();
-    			add_location(div, file$4, 37, 2, 801);
+    			add_location(div, file$4, 40, 2, 880);
     			this.first = div;
     		},
     		m: function mount(target, anchor) {
@@ -2221,7 +2256,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(37:2) {#each filteredMeetups as meetup (meetup.id)}",
+    		source: "(40:2) {#each filteredMeetups as meetup (meetup.id)}",
     		ctx
     	});
 
@@ -2232,6 +2267,7 @@ var app = (function () {
     	let section0;
     	let t0;
     	let t1;
+    	let t2;
     	let section1;
     	let each_blocks = [];
     	let each_1_lookup = new Map();
@@ -2248,6 +2284,7 @@ var app = (function () {
     		});
 
     	button.$on("click", /*click_handler*/ ctx[5]);
+    	let if_block = !/*filteredMeetups*/ ctx[0].length && create_if_block$2(ctx);
     	let each_value = /*filteredMeetups*/ ctx[0];
     	const get_key = ctx => /*meetup*/ ctx[8].id;
 
@@ -2264,17 +2301,19 @@ var app = (function () {
     			t0 = space();
     			create_component(button.$$.fragment);
     			t1 = space();
+    			if (if_block) if_block.c();
+    			t2 = space();
     			section1 = element("section");
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(section0, "class", "meetup-controls svelte-170abba");
+    			attr_dev(section0, "class", "meetup-controls svelte-l72df8");
     			add_location(section0, file$4, 26, 0, 551);
     			attr_dev(section1, "id", "meetups");
-    			attr_dev(section1, "class", "svelte-170abba");
-    			add_location(section1, file$4, 35, 0, 728);
+    			attr_dev(section1, "class", "svelte-l72df8");
+    			add_location(section1, file$4, 38, 0, 807);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2285,6 +2324,8 @@ var app = (function () {
     			append_dev(section0, t0);
     			mount_component(button, section0, null);
     			insert_dev(target, t1, anchor);
+    			if (if_block) if_block.m(target, anchor);
+    			insert_dev(target, t2, anchor);
     			insert_dev(target, section1, anchor);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
@@ -2301,6 +2342,18 @@ var app = (function () {
     			}
 
     			button.$set(button_changes);
+
+    			if (!/*filteredMeetups*/ ctx[0].length) {
+    				if (!if_block) {
+    					if_block = create_if_block$2(ctx);
+    					if_block.c();
+    					if_block.m(t2.parentNode, t2);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+
     			const each_value = /*filteredMeetups*/ ctx[0];
     			group_outros();
     			for (let i = 0; i < each_blocks.length; i += 1) each_blocks[i].r();
@@ -2334,6 +2387,8 @@ var app = (function () {
     			destroy_component(meetupfilter);
     			destroy_component(button);
     			if (detaching) detach_dev(t1);
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach_dev(t2);
     			if (detaching) detach_dev(section1);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
@@ -2562,7 +2617,7 @@ var app = (function () {
     }
 
     // (34:0) {#if validityMessage && !valid && touched}
-    function create_if_block$2(ctx) {
+    function create_if_block$3(ctx) {
     	let p;
     	let t;
 
@@ -2587,7 +2642,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$2.name,
+    		id: create_if_block$3.name,
     		type: "if",
     		source: "(34:0) {#if validityMessage && !valid && touched}",
     		ctx
@@ -2610,7 +2665,7 @@ var app = (function () {
 
     	let current_block_type = select_block_type(ctx);
     	let if_block0 = current_block_type(ctx);
-    	let if_block1 = /*validityMessage*/ ctx[7] && !/*valid*/ ctx[6] && /*touched*/ ctx[8] && create_if_block$2(ctx);
+    	let if_block1 = /*validityMessage*/ ctx[7] && !/*valid*/ ctx[6] && /*touched*/ ctx[8] && create_if_block$3(ctx);
 
     	const block = {
     		c: function create() {
@@ -2662,7 +2717,7 @@ var app = (function () {
     				if (if_block1) {
     					if_block1.p(ctx, dirty);
     				} else {
-    					if_block1 = create_if_block$2(ctx);
+    					if_block1 = create_if_block$3(ctx);
     					if_block1.c();
     					if_block1.m(div, null);
     				}
@@ -3160,9 +3215,11 @@ var app = (function () {
     }
 
     /* src/Meetups/EditMeetup.svelte generated by Svelte v3.16.4 */
+
+    const { console: console_1 } = globals;
     const file$7 = "src/Meetups/EditMeetup.svelte";
 
-    // (147:2) <Button type="button"     mode="outline"     on:click={cancelForm}>
+    // (166:2) <Button type="button"     mode="outline"     on:click={cancelForm}>
     function create_default_slot_3$1(ctx) {
     	let t;
 
@@ -3182,14 +3239,14 @@ var app = (function () {
     		block,
     		id: create_default_slot_3$1.name,
     		type: "slot",
-    		source: "(147:2) <Button type=\\\"button\\\"     mode=\\\"outline\\\"     on:click={cancelForm}>",
+    		source: "(166:2) <Button type=\\\"button\\\"     mode=\\\"outline\\\"     on:click={cancelForm}>",
     		ctx
     	});
 
     	return block;
     }
 
-    // (150:2) <Button type="button"     disabled={!formIsValid} on:click={submitForm}>
+    // (169:2) <Button type="button"     disabled={!formIsValid} on:click={submitForm}>
     function create_default_slot_2$1(ctx) {
     	let t;
 
@@ -3209,15 +3266,15 @@ var app = (function () {
     		block,
     		id: create_default_slot_2$1.name,
     		type: "slot",
-    		source: "(150:2) <Button type=\\\"button\\\"     disabled={!formIsValid} on:click={submitForm}>",
+    		source: "(169:2) <Button type=\\\"button\\\"     disabled={!formIsValid} on:click={submitForm}>",
     		ctx
     	});
 
     	return block;
     }
 
-    // (152:2) {#if id}
-    function create_if_block$3(ctx) {
+    // (171:2) {#if id}
+    function create_if_block$4(ctx) {
     	let current;
 
     	const button = new Button({
@@ -3264,16 +3321,16 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$3.name,
+    		id: create_if_block$4.name,
     		type: "if",
-    		source: "(152:2) {#if id}",
+    		source: "(171:2) {#if id}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (153:4) <Button type="button"       on:click={deleteMeetup}>
+    // (172:4) <Button type="button"       on:click={deleteMeetup}>
     function create_default_slot_1$1(ctx) {
     	let t;
 
@@ -3293,14 +3350,14 @@ var app = (function () {
     		block,
     		id: create_default_slot_1$1.name,
     		type: "slot",
-    		source: "(153:4) <Button type=\\\"button\\\"       on:click={deleteMeetup}>",
+    		source: "(172:4) <Button type=\\\"button\\\"       on:click={deleteMeetup}>",
     		ctx
     	});
 
     	return block;
     }
 
-    // (146:0) <div slot="footer">
+    // (165:0) <div slot="footer">
     function create_footer_slot(ctx) {
     	let div;
     	let t0;
@@ -3330,7 +3387,7 @@ var app = (function () {
     		});
 
     	button1.$on("click", /*submitForm*/ ctx[14]);
-    	let if_block = /*id*/ ctx[0] && create_if_block$3(ctx);
+    	let if_block = /*id*/ ctx[0] && create_if_block$4(ctx);
 
     	const block = {
     		c: function create() {
@@ -3341,7 +3398,7 @@ var app = (function () {
     			t1 = space();
     			if (if_block) if_block.c();
     			attr_dev(div, "slot", "footer");
-    			add_location(div, file$7, 145, 0, 3319);
+    			add_location(div, file$7, 164, 0, 4124);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -3374,7 +3431,7 @@ var app = (function () {
     					if_block.p(ctx, dirty);
     					transition_in(if_block, 1);
     				} else {
-    					if_block = create_if_block$3(ctx);
+    					if_block = create_if_block$4(ctx);
     					if_block.c();
     					transition_in(if_block, 1);
     					if_block.m(div, null);
@@ -3414,14 +3471,14 @@ var app = (function () {
     		block,
     		id: create_footer_slot.name,
     		type: "slot",
-    		source: "(146:0) <div slot=\\\"footer\\\">",
+    		source: "(165:0) <div slot=\\\"footer\\\">",
     		ctx
     	});
 
     	return block;
     }
 
-    // (83:0) <Modal title="Edit Meetup Data"   on:cancelmodal>
+    // (102:0) <Modal title="Edit Meetup Data"   on:cancelmodal>
     function create_default_slot$3(ctx) {
     	let form;
     	let t0;
@@ -3545,7 +3602,7 @@ var app = (function () {
     			create_component(textinput5.$$.fragment);
     			t5 = space();
     			attr_dev(form, "class", "svelte-no1xoc");
-    			add_location(form, file$7, 84, 0, 1846);
+    			add_location(form, file$7, 103, 0, 2651);
     			dispose = listen_dev(form, "submit", prevent_default(/*submitForm*/ ctx[14]), false, true, false);
     		},
     		m: function mount(target, anchor) {
@@ -3633,7 +3690,7 @@ var app = (function () {
     		block,
     		id: create_default_slot$3.name,
     		type: "slot",
-    		source: "(83:0) <Modal title=\\\"Edit Meetup Data\\\"   on:cancelmodal>",
+    		source: "(102:0) <Modal title=\\\"Edit Meetup Data\\\"   on:cancelmodal>",
     		ctx
     	});
 
@@ -3737,9 +3794,21 @@ var app = (function () {
     		};
 
     		if (id) {
-    			customMeetupsStore.updateMeetup(id, meetupData);
+    			fetch(`https://svelte-meetus-ec364.firebaseio.com/meetups/${id}/.json`, {
+    				method: "PATCH",
+    				body: JSON.stringify(meetupData),
+    				headers: { "Content-Type": "application/json" }
+    			}).then(res => customMeetupsStore.updateMeetup(id, meetupData)).catch(err => console.log(err));
     		} else {
-    			customMeetupsStore.addMeetup(meetupData);
+    			fetch("https://svelte-meetus-ec364.firebaseio.com/meetups.json", {
+    				method: "POST",
+    				body: JSON.stringify({ ...meetupData, favourite: false }),
+    				headers: { "Content-Type": "application/json" }
+    			}).then(res => res.json()).then(data => customMeetupsStore.addMeetup({
+    				...meetupData,
+    				favourite: false,
+    				id: data.name
+    			})).catch(err => console.log(err));
     		}
 
     		dispatch("save");
@@ -3757,7 +3826,7 @@ var app = (function () {
     	const writable_props = ["id"];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<EditMeetup> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<EditMeetup> was created with unknown prop '${key}'`);
     	});
 
     	const input_handler = event => $$invalidate(1, title = event.target.value);
@@ -4253,19 +4322,96 @@ var app = (function () {
     	}
     }
 
-    /* src/App.svelte generated by Svelte v3.16.4 */
-    const file$a = "src/App.svelte";
+    /* src/UI/LoadingSpinner.svelte generated by Svelte v3.16.4 */
 
-    // (53:0) {:else}
-    function create_else_block$2(ctx) {
+    const file$a = "src/UI/LoadingSpinner.svelte";
+
+    function create_fragment$a(ctx) {
+    	let div5;
+    	let div4;
+    	let div0;
+    	let div1;
+    	let div2;
+    	let div3;
+
+    	const block = {
+    		c: function create() {
+    			div5 = element("div");
+    			div4 = element("div");
+    			div0 = element("div");
+    			div1 = element("div");
+    			div2 = element("div");
+    			div3 = element("div");
+    			attr_dev(div0, "class", "svelte-1w8lyh7");
+    			add_location(div0, file$a, 7, 24, 69);
+    			attr_dev(div1, "class", "svelte-1w8lyh7");
+    			add_location(div1, file$a, 7, 35, 80);
+    			attr_dev(div2, "class", "svelte-1w8lyh7");
+    			add_location(div2, file$a, 7, 46, 91);
+    			attr_dev(div3, "class", "svelte-1w8lyh7");
+    			add_location(div3, file$a, 7, 57, 102);
+    			attr_dev(div4, "class", "lds-ring svelte-1w8lyh7");
+    			add_location(div4, file$a, 7, 2, 47);
+    			attr_dev(div5, "class", "loading svelte-1w8lyh7");
+    			add_location(div5, file$a, 6, 0, 23);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div5, anchor);
+    			append_dev(div5, div4);
+    			append_dev(div4, div0);
+    			append_dev(div4, div1);
+    			append_dev(div4, div2);
+    			append_dev(div4, div3);
+    		},
+    		p: noop,
+    		i: noop,
+    		o: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div5);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$a.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    class LoadingSpinner extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, null, create_fragment$a, safe_not_equal, {});
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "LoadingSpinner",
+    			options,
+    			id: create_fragment$a.name
+    		});
+    	}
+    }
+
+    /* src/App.svelte generated by Svelte v3.16.4 */
+    const file$b = "src/App.svelte";
+
+    // (73:0) {:else}
+    function create_else_block_1(ctx) {
     	let current;
 
     	const meetupdetail = new MeetupDetail({
-    			props: { id: /*pageData*/ ctx[3].id },
+    			props: { id: /*pageData*/ ctx[4].id },
     			$$inline: true
     		});
 
-    	meetupdetail.$on("close", /*close_handler*/ ctx[10]);
+    	meetupdetail.$on("close", /*close_handler*/ ctx[11]);
 
     	const block = {
     		c: function create() {
@@ -4277,7 +4423,7 @@ var app = (function () {
     		},
     		p: function update(ctx, dirty) {
     			const meetupdetail_changes = {};
-    			if (dirty[0] & /*pageData*/ 8) meetupdetail_changes.id = /*pageData*/ ctx[3].id;
+    			if (dirty[0] & /*pageData*/ 16) meetupdetail_changes.id = /*pageData*/ ctx[4].id;
     			meetupdetail.$set(meetupdetail_changes);
     		},
     		i: function intro(local) {
@@ -4296,107 +4442,134 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_else_block$2.name,
+    		id: create_else_block_1.name,
     		type: "else",
-    		source: "(53:0) {:else}",
+    		source: "(73:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (41:0) {#if page === 'overview'}
-    function create_if_block$4(ctx) {
+    // (57:0) {#if page === 'overview'}
+    function create_if_block$5(ctx) {
     	let t;
+    	let current_block_type_index;
+    	let if_block1;
+    	let if_block1_anchor;
     	let current;
-    	let if_block = /*editMode*/ ctx[0] === "edit" && create_if_block_1$1(ctx);
+    	let if_block0 = /*editMode*/ ctx[1] === "edit" && create_if_block_2(ctx);
+    	const if_block_creators = [create_if_block_1$1, create_else_block$2];
+    	const if_blocks = [];
 
-    	const meetupgrid = new MeetupGrid({
-    			props: { meetups: /*$meetups*/ ctx[4] },
-    			$$inline: true
-    		});
+    	function select_block_type_1(ctx, dirty) {
+    		if (/*isLoading*/ ctx[0]) return 0;
+    		return 1;
+    	}
 
-    	meetupgrid.$on("showdetails", /*showDetails*/ ctx[7]);
-    	meetupgrid.$on("editmeetup", /*startEdit*/ ctx[8]);
-    	meetupgrid.$on("add", /*add_handler*/ ctx[9]);
+    	current_block_type_index = select_block_type_1(ctx);
+    	if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
 
     	const block = {
     		c: function create() {
-    			if (if_block) if_block.c();
+    			if (if_block0) if_block0.c();
     			t = space();
-    			create_component(meetupgrid.$$.fragment);
+    			if_block1.c();
+    			if_block1_anchor = empty();
     		},
     		m: function mount(target, anchor) {
-    			if (if_block) if_block.m(target, anchor);
+    			if (if_block0) if_block0.m(target, anchor);
     			insert_dev(target, t, anchor);
-    			mount_component(meetupgrid, target, anchor);
+    			if_blocks[current_block_type_index].m(target, anchor);
+    			insert_dev(target, if_block1_anchor, anchor);
     			current = true;
     		},
     		p: function update(ctx, dirty) {
-    			if (/*editMode*/ ctx[0] === "edit") {
-    				if (if_block) {
-    					if_block.p(ctx, dirty);
-    					transition_in(if_block, 1);
+    			if (/*editMode*/ ctx[1] === "edit") {
+    				if (if_block0) {
+    					if_block0.p(ctx, dirty);
+    					transition_in(if_block0, 1);
     				} else {
-    					if_block = create_if_block_1$1(ctx);
-    					if_block.c();
-    					transition_in(if_block, 1);
-    					if_block.m(t.parentNode, t);
+    					if_block0 = create_if_block_2(ctx);
+    					if_block0.c();
+    					transition_in(if_block0, 1);
+    					if_block0.m(t.parentNode, t);
     				}
-    			} else if (if_block) {
+    			} else if (if_block0) {
     				group_outros();
 
-    				transition_out(if_block, 1, 1, () => {
-    					if_block = null;
+    				transition_out(if_block0, 1, 1, () => {
+    					if_block0 = null;
     				});
 
     				check_outros();
     			}
 
-    			const meetupgrid_changes = {};
-    			if (dirty[0] & /*$meetups*/ 16) meetupgrid_changes.meetups = /*$meetups*/ ctx[4];
-    			meetupgrid.$set(meetupgrid_changes);
+    			let previous_block_index = current_block_type_index;
+    			current_block_type_index = select_block_type_1(ctx);
+
+    			if (current_block_type_index === previous_block_index) {
+    				if_blocks[current_block_type_index].p(ctx, dirty);
+    			} else {
+    				group_outros();
+
+    				transition_out(if_blocks[previous_block_index], 1, 1, () => {
+    					if_blocks[previous_block_index] = null;
+    				});
+
+    				check_outros();
+    				if_block1 = if_blocks[current_block_type_index];
+
+    				if (!if_block1) {
+    					if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    					if_block1.c();
+    				}
+
+    				transition_in(if_block1, 1);
+    				if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
+    			}
     		},
     		i: function intro(local) {
     			if (current) return;
-    			transition_in(if_block);
-    			transition_in(meetupgrid.$$.fragment, local);
+    			transition_in(if_block0);
+    			transition_in(if_block1);
     			current = true;
     		},
     		o: function outro(local) {
-    			transition_out(if_block);
-    			transition_out(meetupgrid.$$.fragment, local);
+    			transition_out(if_block0);
+    			transition_out(if_block1);
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			if (if_block) if_block.d(detaching);
+    			if (if_block0) if_block0.d(detaching);
     			if (detaching) detach_dev(t);
-    			destroy_component(meetupgrid, detaching);
+    			if_blocks[current_block_type_index].d(detaching);
+    			if (detaching) detach_dev(if_block1_anchor);
     		}
     	};
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$4.name,
+    		id: create_if_block$5.name,
     		type: "if",
-    		source: "(41:0) {#if page === 'overview'}",
+    		source: "(57:0) {#if page === 'overview'}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (42:2) {#if editMode === 'edit'}
-    function create_if_block_1$1(ctx) {
+    // (58:2) {#if editMode === 'edit'}
+    function create_if_block_2(ctx) {
     	let current;
 
     	const editmeetup = new EditMeetup({
-    			props: { id: /*editedId*/ ctx[1] },
+    			props: { id: /*editedId*/ ctx[2] },
     			$$inline: true
     		});
 
-    	editmeetup.$on("save", /*saveMeetup*/ ctx[5]);
-    	editmeetup.$on("cancelmodal", /*cancelEdit*/ ctx[6]);
+    	editmeetup.$on("save", /*saveMeetup*/ ctx[6]);
+    	editmeetup.$on("cancelmodal", /*cancelEdit*/ ctx[7]);
 
     	const block = {
     		c: function create() {
@@ -4408,7 +4581,7 @@ var app = (function () {
     		},
     		p: function update(ctx, dirty) {
     			const editmeetup_changes = {};
-    			if (dirty[0] & /*editedId*/ 2) editmeetup_changes.id = /*editedId*/ ctx[1];
+    			if (dirty[0] & /*editedId*/ 4) editmeetup_changes.id = /*editedId*/ ctx[2];
     			editmeetup.$set(editmeetup_changes);
     		},
     		i: function intro(local) {
@@ -4427,27 +4600,117 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_1$1.name,
+    		id: create_if_block_2.name,
     		type: "if",
-    		source: "(42:2) {#if editMode === 'edit'}",
+    		source: "(58:2) {#if editMode === 'edit'}",
     		ctx
     	});
 
     	return block;
     }
 
-    function create_fragment$a(ctx) {
+    // (66:2) {:else}
+    function create_else_block$2(ctx) {
+    	let current;
+
+    	const meetupgrid = new MeetupGrid({
+    			props: { meetups: /*$meetups*/ ctx[5] },
+    			$$inline: true
+    		});
+
+    	meetupgrid.$on("showdetails", /*showDetails*/ ctx[8]);
+    	meetupgrid.$on("editmeetup", /*startEdit*/ ctx[9]);
+    	meetupgrid.$on("add", /*add_handler*/ ctx[10]);
+
+    	const block = {
+    		c: function create() {
+    			create_component(meetupgrid.$$.fragment);
+    		},
+    		m: function mount(target, anchor) {
+    			mount_component(meetupgrid, target, anchor);
+    			current = true;
+    		},
+    		p: function update(ctx, dirty) {
+    			const meetupgrid_changes = {};
+    			if (dirty[0] & /*$meetups*/ 32) meetupgrid_changes.meetups = /*$meetups*/ ctx[5];
+    			meetupgrid.$set(meetupgrid_changes);
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(meetupgrid.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(meetupgrid.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			destroy_component(meetupgrid, detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block$2.name,
+    		type: "else",
+    		source: "(66:2) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (64:2) {#if isLoading}
+    function create_if_block_1$1(ctx) {
+    	let current;
+    	const loadingspinner = new LoadingSpinner({ $$inline: true });
+
+    	const block = {
+    		c: function create() {
+    			create_component(loadingspinner.$$.fragment);
+    		},
+    		m: function mount(target, anchor) {
+    			mount_component(loadingspinner, target, anchor);
+    			current = true;
+    		},
+    		p: noop,
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(loadingspinner.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(loadingspinner.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			destroy_component(loadingspinner, detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_1$1.name,
+    		type: "if",
+    		source: "(64:2) {#if isLoading}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$b(ctx) {
     	let t;
     	let main;
     	let current_block_type_index;
     	let if_block;
     	let current;
     	const header = new Header({ $$inline: true });
-    	const if_block_creators = [create_if_block$4, create_else_block$2];
+    	const if_block_creators = [create_if_block$5, create_else_block_1];
     	const if_blocks = [];
 
     	function select_block_type(ctx, dirty) {
-    		if (/*page*/ ctx[2] === "overview") return 0;
+    		if (/*page*/ ctx[3] === "overview") return 0;
     		return 1;
     	}
 
@@ -4461,7 +4724,7 @@ var app = (function () {
     			main = element("main");
     			if_block.c();
     			attr_dev(main, "class", "svelte-1c1jzps");
-    			add_location(main, file$a, 38, 0, 747);
+    			add_location(main, file$b, 54, 0, 1172);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4519,7 +4782,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$a.name,
+    		id: create_fragment$b.name,
     		type: "component",
     		source: "",
     		ctx
@@ -4531,48 +4794,70 @@ var app = (function () {
     function instance$9($$self, $$props, $$invalidate) {
     	let $meetups;
     	validate_store(customMeetupsStore, "meetups");
-    	component_subscribe($$self, customMeetupsStore, $$value => $$invalidate(4, $meetups = $$value));
+    	component_subscribe($$self, customMeetupsStore, $$value => $$invalidate(5, $meetups = $$value));
+
+    	onMount(async () => {
+    		const res = await fetch("https://svelte-meetus-ec364.firebaseio.com/meetups.json");
+    		const response = await res.json();
+    		const loadedMeetups = [];
+
+    		for (const key in response) {
+    			loadedMeetups.push({ id: key, ...response[key] });
+    		}
+
+    		setTimeout(
+    			() => {
+    				$$invalidate(0, isLoading = false);
+    				customMeetupsStore.setMeetups(loadedMeetups);
+    			},
+    			500
+    		);
+    	});
+
+    	let isLoading = true;
     	let editMode;
     	let editedId;
     	let page = "overview";
     	let pageData = {};
 
     	function saveMeetup() {
-    		$$invalidate(0, editMode = null);
-    		$$invalidate(0, editMode = null);
+    		$$invalidate(1, editMode = null);
+    		$$invalidate(1, editMode = null);
     	}
 
     	function cancelEdit() {
-    		$$invalidate(0, editMode = null);
-    		$$invalidate(1, editedId = null);
+    		$$invalidate(1, editMode = null);
+    		$$invalidate(2, editedId = null);
     	}
 
     	function showDetails(event) {
-    		$$invalidate(2, page = "details");
-    		$$invalidate(3, pageData.id = event.detail, pageData);
+    		$$invalidate(3, page = "details");
+    		$$invalidate(4, pageData.id = event.detail, pageData);
     	}
 
     	function startEdit(event) {
-    		$$invalidate(0, editMode = "edit");
-    		$$invalidate(1, editedId = event.detail);
+    		$$invalidate(1, editMode = "edit");
+    		$$invalidate(2, editedId = event.detail);
     	}
 
-    	const add_handler = () => $$invalidate(0, editMode = "edit");
-    	const close_handler = () => $$invalidate(2, page = "overview");
+    	const add_handler = () => $$invalidate(1, editMode = "edit");
+    	const close_handler = () => $$invalidate(3, page = "overview");
 
     	$$self.$capture_state = () => {
     		return {};
     	};
 
     	$$self.$inject_state = $$props => {
-    		if ("editMode" in $$props) $$invalidate(0, editMode = $$props.editMode);
-    		if ("editedId" in $$props) $$invalidate(1, editedId = $$props.editedId);
-    		if ("page" in $$props) $$invalidate(2, page = $$props.page);
-    		if ("pageData" in $$props) $$invalidate(3, pageData = $$props.pageData);
+    		if ("isLoading" in $$props) $$invalidate(0, isLoading = $$props.isLoading);
+    		if ("editMode" in $$props) $$invalidate(1, editMode = $$props.editMode);
+    		if ("editedId" in $$props) $$invalidate(2, editedId = $$props.editedId);
+    		if ("page" in $$props) $$invalidate(3, page = $$props.page);
+    		if ("pageData" in $$props) $$invalidate(4, pageData = $$props.pageData);
     		if ("$meetups" in $$props) customMeetupsStore.set($meetups = $$props.$meetups);
     	};
 
     	return [
+    		isLoading,
     		editMode,
     		editedId,
     		page,
@@ -4590,13 +4875,13 @@ var app = (function () {
     class App extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$9, create_fragment$a, safe_not_equal, {});
+    		init(this, options, instance$9, create_fragment$b, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "App",
     			options,
-    			id: create_fragment$a.name
+    			id: create_fragment$b.name
     		});
     	}
     }
