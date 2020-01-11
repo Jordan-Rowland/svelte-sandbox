@@ -19,7 +19,15 @@
 
 
   function toggleFavourite() {
-    meetups.toggleFavourite(id);
+    fetch(`https://svelte-meetus-ec364.firebaseio.com/meetups/${id}.json`, {
+      method: "PATCH",
+      body: JSON.stringify({ favourite: !isFave }),
+      headers: {
+        'Content-Type': "application/json"
+      }
+    })
+    .then(res => meetups.toggleFavourite(id))
+    .catch(err => console.log(err));
   }
 
 </script>

@@ -63,7 +63,7 @@
     };
 
     if (id) {
-      fetch(`https://svelte-meetus-ec364.firebaseio.com/meetups/${id}/.json`, {
+      fetch(`https://svelte-meetus-ec364.firebaseio.com/meetups/${id}.json`, {
         // PUT is used to override all existing data with
         // the new data. PATCH will overwrite what is included
         // in the request, and leave the rest.
@@ -94,7 +94,11 @@
   }
 
   function deleteMeetup() {
-    meetups.removeMeetup(id);
+    fetch(`https://svelte-meetus-ec364.firebaseio.com/meetups/${id}.json`, {
+      method: "DELETE"
+    })
+    .then(res => meetups.removeMeetup(id))
+    .catch(err => console.log(err));
     dispatch("save");
   }
 </script>

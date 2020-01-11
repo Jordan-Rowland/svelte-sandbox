@@ -18,7 +18,7 @@ onMount(async () => {
   }
   setTimeout(() => {
     isLoading = false;
-    meetups.setMeetups(loadedMeetups);
+    meetups.setMeetups(loadedMeetups.reverse());
   } , 500);
 });
 
